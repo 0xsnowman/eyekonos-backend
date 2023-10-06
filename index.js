@@ -42,22 +42,39 @@ app.get('/authorize', (req, res) => {
 });
 
 // OAuth2 Access Token getter
-app.post('/token', async (req, res) => {
-  const { code, client_id, grant_type, redirect_uri, code_verifier } = req.body;
-
-  try {
-    const response = await axios.post(process.env.ZAPIER_REDIRECT_URI, {
-      code,
-      client_id,
-      grant_type,
-      redirect_uri,
-      code_verifier
-    });
-
-    res.status(200).json(response.data);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+app.post('/token', async (req, bundle) => {
+  const options = {
+    url: process.env.ZAPIER_REDIRECT_URI,
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/problem+json'
+    },
+    params: {
+  
+    },
+    body: {
+      'code': bundle.inputData.code,
+      'client_id': process.env.CLIENT_ID,
+      'grant_type': "authorization_code",
+      'redirect_uri': bundle.inputData.redirect_uri,
+      'code_verifier': bundle.inputData.code_verifier,
+    }
   }
+  
+  return z.request(options)
+    .then((response) => {
+      response.throwForStatus();
+      const result = response;
+  
+      return {
+        'code': result.json.code,
+        'client_id': result.json.client_id,
+        'grant_type': result.json.grant_type,
+        'redirect_uri': result.json.redirect_uri,
+        'code_verifier': result.json.code_verifier,
+      };
+  });
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
