@@ -43,7 +43,7 @@ app.get('/authorize', (req, res) => {
 
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
-  const promise = z.request(`${process.env.ZAPIER_REDIRECT_URI}`, {
+  const promise = z.request(`https://auth-json-server.zapier.ninja/oauth/access-token`, {
     method: 'POST',
     body: {
       code: bundle.inputData.code,
