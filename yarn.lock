@@ -1416,3 +1416,8 @@ yargs@^17.7.2:
     string-width "^4.2.3"
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
+
+zapier@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/zapier/-/zapier-0.0.1.tgz#fba90f8e9baa9b03c5b97c0df76801c9d6ee60db"
+  integrity sha512-8hUKIo01ttgjTSrB85hCLaZBpIUju67I4hW7XyXAD62oZtq4F2eJpJ4vQjP3LuMrXHOjafQYUULbModMUH4oww==
