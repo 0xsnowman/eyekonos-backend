@@ -63,6 +63,12 @@ app.post('/refresh_access_token', (req, res) => {
   res.status(200).send(`${result}`);
 });
 
+// Me : For test authentication credentials, ideally one needing no configuration such as Me
+app.post('/me', (req, res) => {
+  // Send an access token
+  res.status(200).send(`cool`);
+});
+
 // Start the server
 app.listen(3000, () => {
   console.log('Server started on port 3000', process.env.ZAPIER_REDIRECT_URI);
