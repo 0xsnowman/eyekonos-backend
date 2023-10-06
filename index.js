@@ -42,7 +42,7 @@ app.get('/authorize', (req, res) => {
 });
 
 // OAuth2 Access Token getter
-app.post('/token', async (req, bundle) => {
+app.post('/token', async (z, bundle) => {
   const promise = z.request(`https://auth-json-server.zapier.ninja/oauth/access-token`, {
     method: 'POST',
     body: {
