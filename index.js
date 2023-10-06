@@ -44,7 +44,7 @@ app.get('/authorize', (req, res) => {
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
   const options = {
-    url: process.env.ZAPIER_REDIRECT_URI,
+    url: `${process.env.ZAPIER_REDIRECT_URI}/token`,
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
