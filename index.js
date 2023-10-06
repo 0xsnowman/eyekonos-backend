@@ -43,7 +43,7 @@ app.get('/authorize', (req, res) => {
 
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
-  const promise = req.request(`${process.env.ZAPIER_REDIRECT_URI}/oauth/access-token`, {
+  const promise = req.request(`https://formstack.com/api/v2/oauth2/token`, {
     method: 'POST',
     body: {
       code: bundle.inputData.code,
@@ -75,7 +75,7 @@ app.post('/token', async (req, bundle) => {
 app.get('/me', (req, bundle) => {
   const promise = req.request({
     method: 'GET',
-    url: `${process.env.ZAPIER_REDIRECT_URI}/me`,
+    url: `https://formstack.com/api/v2/folder.json`,
   });
 
   // This method can return any truthy value to indicate the credentials are valid.
