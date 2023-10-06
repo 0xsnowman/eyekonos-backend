@@ -24,49 +24,42 @@ app.post('/tickets', (req, res) => {
 });
 
 // OAuth2 authentication
-app.post('/auth', (req, res) => {
-  console.log(req.body);
-  const client_id = req.body.client_id;
-  const client_secret = req.body.client_secret;
-  const res_token = 'fail';
+app.get('/authorize', (req, res) => {
+  const clientId = req.query.client_id;
+  const state = req.query.state;
+  const redirectUri = req.query.redirect_uri;
+  const responseType = req.query.response_type;
 
   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-  console.log(`Authorized successfully, payload: {${client_id}, ${client_secret}}`);
+  console.log(`Authorized successfully, payload: {${clientId}, ${state}, ${redirectUri}, ${responseType}}`);
 
   // Send an access token
-  res.status(200).send(`${res_token}`);
+  res.send(`${clientId}, ${state}, ${redirectUri}, ${responseType}`);
 });
 
 // OAuth2 Access Token getter
-app.post('/set_access_token', (req, res) => {
-  console.log(req.body);
-  const access_token = req.body.access_token;
-  const result = 'fail';
+app.post('/token', (req, res) => {
+  const code = req.body.code;
+  const client_id = req.body.client_id;
+  const client_secret = req.body.client_secret;
+  const grant_type = req.body.grant_type;
+  const redirect_uri = req.body.redirect_uri;
+  const code_verifier = req.body.code_verifier;
 
   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-  console.log(`Access Token received successfully, payload: ${access_token}`);
+  console.log(`Access Token received successfully, payload: ${code}, ${client_id}, ${client_secret}, ${grant_type}, ${redirect_uri}, ${code_verifier}`);
 
   // Send an access token
-  res.status(200).send(`${result}`);
-});
-
-// OAuth2 refresh token
-app.post('/refresh_access_token', (req, res) => {
-  console.log(req.body);
-  const refresh_token = req.body.refresh_token;
-  const result = 'fail';
-
-  // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-  console.log(`Refreshed access token successfully, payload: ${refresh_token}`);
-
-  // Send an access token
-  res.status(200).send(`${result}`);
+  res.status(200).send(`Access Token received successfully, payload: ${code}, ${client_id}, ${client_secret}, ${grant_type}, ${redirect_uri}, ${code_verifier}`);
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
-app.post('/me', (req, res) => {
-  // Send an access token
-  res.status(200).send(`cool`);
+app.get('/me', (req, res) => {
+  const platform = req.query.platform;
+  const event_id = req.query.event_id;
+
+  // Send response with event_id
+  res.status(200).send(`${platform}, ${event_id}`);
 });
 
 // Start the server
