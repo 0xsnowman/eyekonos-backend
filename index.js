@@ -42,8 +42,8 @@ app.get('/authorize', (req, res) => {
 });
 
 // OAuth2 Access Token getter
-app.post('/token', async (z, bundle) => {
-  const promise = z.request(`https://auth-json-server.zapier.ninja/oauth/access-token`, {
+app.post('/token', async (req, bundle) => {
+  const promise = req.request(`https://auth-json-server.zapier.ninja/oauth/access-token`, {
     method: 'POST',
     body: {
       code: bundle.inputData.code,
@@ -66,18 +66,26 @@ app.post('/token', async (z, bundle) => {
     const result = JSON.parse(response.content);
     return {
       access_token: result.access_token,
-      refresh_token: result.refresh_token
+      // refresh_token: result.refresh_token
     };
   });
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
 app.get('/me', (req, res) => {
-  const platform = req.query.platform;
-  const event_id = req.query.event_id;
+  const promise = req.request({
+    method: 'GET',
+    url: `${process.env.BASE_URL}/me`,
+  });
 
-  // Send response with event_id
-  res.status(200).send(`${platform}, ${event_id}`);
+  // This method can return any truthy value to indicate the credentials are valid.
+  // Raise an error to show
+  return promise.then((response) => {
+    if (response.status === 401) {
+      throw new Error('The access token you supplied is not valid');
+    }
+    return req.JSON.parse(response.content);
+  });
 });
 
 // Start the server
