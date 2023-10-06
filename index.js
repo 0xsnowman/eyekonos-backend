@@ -45,7 +45,7 @@ app.post('/token', async (req, res) => {
   const { code, client_id, grant_type, redirect_uri, code_verifier } = req.body;
 
   try {
-    const response = await axios.post('https://zapier.com/oauth/token', {
+    const response = await axios.post(process.env.ZAPIER_REDIRECT_URI, {
       code,
       client_id,
       grant_type,
