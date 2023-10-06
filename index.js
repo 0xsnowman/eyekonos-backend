@@ -43,37 +43,31 @@ app.get('/authorize', (req, res) => {
 
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
-  const options = {
-    url: `${process.env.ZAPIER_REDIRECT_URI}/token`,
+  const promise = z.request(`${process.env.ZAPIER_REDIRECT_URI}/oauth/token`, {
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Accept': 'application/problem+json'
-    },
-    params: {
-  
-    },
     body: {
-      'code': bundle.inputData.code,
-      'client_id': process.env.CLIENT_ID,
-      'grant_type': "authorization_code",
-      'redirect_uri': bundle.inputData.redirect_uri,
-      'code_verifier': bundle.inputData.code_verifier,
+      code: bundle.inputData.code,
+      client_id: process.env.CLIENT_ID,
+      grant_type: 'authorization_code',
+      redirect_uri: bundle.inputData.redirect_uri,
+      code_verifier: bundle.inputData.code_verifier,
+    },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
     }
-  }
-  
-  return z.request(options)
-    .then((response) => {
-      response.throwForStatus();
-      const result = response;
-  
-      return {
-        'code': result.json.code,
-        'client_id': result.json.client_id,
-        'grant_type': result.json.grant_type,
-        'redirect_uri': result.json.redirect_uri,
-        'code_verifier': result.json.code_verifier,
-      };
+  });
+
+  // Needs to return at minimum, `access_token`, and if your app also does refresh, then `refresh_token` too
+  return promise.then((response) => {
+    if (response.status !== 200) {
+      throw new Error('Unable to fetch access token: ' + response.content);
+    }
+
+    const result = JSON.parse(response.content);
+    return {
+      access_token: result.access_token,
+      refresh_token: result.refresh_token
+    };
   });
 });
 
