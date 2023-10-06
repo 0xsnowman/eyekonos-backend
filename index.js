@@ -1,4 +1,5 @@
 const express = require('express');
+const request = require('request');
 const bodyParser = require('body-parser');
 
 require('dotenv').config();
@@ -33,8 +34,10 @@ app.get('/authorize', (req, res) => {
   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
   console.log(`Authorized successfully, payload: {${clientId}, ${state}, ${redirectUri}, ${responseType}}`);
 
+  const authorizeUrl = `https://zapier.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
+
   // Send an access token
-  res.send(`${clientId}, ${state}, ${redirectUri}, ${responseType}`);
+  res.redirect(authorizeUrl);
 });
 
 // OAuth2 Access Token getter
@@ -49,8 +52,28 @@ app.post('/token', (req, res) => {
   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
   console.log(`Access Token received successfully, payload: ${code}, ${client_id}, ${client_secret}, ${grant_type}, ${redirect_uri}, ${code_verifier}`);
 
-  // Send an access token
-  res.status(200).send(`Access Token received successfully, payload: ${code}, ${client_id}, ${client_secret}, ${grant_type}, ${redirect_uri}, ${code_verifier}`);
+  const tokenUrl = 'https://zapier.com/oauth/token';
+  const formData = {
+    code: code,
+    client_id: client_id,
+    client_secret: client_secret,
+    // grant_type: 'authorization_code'
+    grant_type: grant_type,
+  };
+
+  request.post({ url: tokenUrl, form: formData }, (err, response, body) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error exchanging authorization code for access token');
+    }
+
+    console.log(`body : ${body}`);
+    const data = JSON.parse(body);
+    const accessToken = data.access_token;
+
+    // You can store the access token in your database or return it to Zapier
+    return res.status(200).json({ access_token: accessToken });
+  });
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
