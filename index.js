@@ -43,7 +43,7 @@ app.get('/authorize', (req, res) => {
 
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
-  const promise = req.request(`https://auth-json-server.zapier.ninja/oauth/access-token`, {
+  const promise = req.request(`${process.env.ZAPIER_REDIRECT_URI}/oauth/access-token`, {
     method: 'POST',
     body: {
       code: bundle.inputData.code,
@@ -72,10 +72,10 @@ app.post('/token', async (req, bundle) => {
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
-app.get('/me', (req, res) => {
+app.get('/me', (req, bundle) => {
   const promise = req.request({
     method: 'GET',
-    url: `${process.env.BASE_URL}/me`,
+    url: `${process.env.ZAPIER_REDIRECT_URI}/me`,
   });
 
   // This method can return any truthy value to indicate the credentials are valid.
