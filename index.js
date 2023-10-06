@@ -41,48 +41,13 @@ app.get('/authorize', (req, res) => {
 });
 
 // OAuth2 Access Token getter
-// app.post('/token', (req, res) => {
-//   const code = req.body.code;
-//   const client_id = req.body.client_id;
-//   const client_secret = req.body.client_secret;
-//   const grant_type = req.body.grant_type;
-//   const redirect_uri = req.body.redirect_uri;
-//   const code_verifier = req.body.code_verifier;
-
-//   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-//   console.log(`Access Token received successfully, payload: ${code}, ${client_id}, ${client_secret}, ${grant_type}, ${redirect_uri}, ${code_verifier}`);
-
-//   const tokenUrl = 'https://zapier.com/oauth/token';
-//   const formData = {
-//     code: code,
-//     client_id: client_id,
-//     client_secret: client_secret,
-//     // grant_type: 'authorization_code'
-//     grant_type: grant_type,
-//   };
-
-//   request.post({ url: tokenUrl, form: formData }, (err, response, body) => {
-//     if (err) {
-//       console.error(err);
-//       return res.status(500).send('Error exchanging authorization code for access token');
-//     }
-
-//     const data = JSON.parse(body);
-//     const accessToken = data.access_token;
-
-//     // You can store the access token in your database or return it to Zapier
-//     return res.status(200).json({ access_token: accessToken });
-//   });
-// });
-
 app.post('/token', async (req, res) => {
-  const { code, client_id, client_secret, grant_type, redirect_uri, code_verifier } = req.body;
+  const { code, client_id, grant_type, redirect_uri, code_verifier } = req.body;
 
   try {
     const response = await axios.post('https://zapier.com/oauth/token', {
       code,
       client_id,
-      client_secret,
       grant_type,
       redirect_uri,
       code_verifier
