@@ -29,19 +29,16 @@ app.post('/tickets', (req, res) => {
 
 // OAuth2 authentication
 app.get('/authorize', (req, res) => {
-  const clientId = req.query.client_id;
-  const state = req.query.state;
-  const redirectUri = req.query.redirect_uri;
-  const responseType = req.query.response_type;
-  // const code = req.query.code;
+  const { client_id, redirect_uri, state } = req.query;
 
-  // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-  console.log(`Authorized successfully, payload: {${clientId}, ${state}, ${redirectUri}, ${responseType}}`);
+  // Check if all required parameters are present
+  if (!client_id || !redirect_uri || !state) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
 
-  const authorizeUrl = `${process.env.ZAPIER_REDIRECT_URI}?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&code=code`;
-
-  // Send an access token
-  res.redirect(authorizeUrl);
+  // Redirect user to Zapier authorization page
+  const authorizationUrl = `https://zapier.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}`;
+  res.redirect(authorizationUrl);
 });
 
 // OAuth2 Access Token getter
