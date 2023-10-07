@@ -33,7 +33,7 @@ const authorizationUri = client.authorizeURL({
 });
 
 app.get('/authorize', async (req, res) => {
-  writeToXataClient(authorizationUri);
+  // writeToXataClient(authorizationUri);
   res.redirect(authorizationUri);
 });
 
@@ -50,17 +50,17 @@ app.post('/token', async (req, res) => {
 
     console.log('The resulting token: ', accessToken.token);
 
-    writeToXataClient("Access token was created: " + accessToken.token);
+    // writeToXataClient("Access token was created: " + accessToken.token);
     return res.status(200).json(accessToken.token);
   } catch (error) {
     console.error('Access Token Error', error.message);
-    writeToXataClient("Error creating access token: " + error.message);
+    // writeToXataClient("Error creating access token: " + error.message);
     return res.status(500).json('Authentication failed');
   }
 });
 
 app.get('/me', (req, res) => {
-    writeToXataClient('Hello<br><a href="/auth">Log in with Zapier</a>');
+    // writeToXataClient('Hello<br><a href="/auth">Log in with Zapier</a>');
     res.send('Hello<br><a href="/auth">Log in with Zapier</a>');
 });
 
