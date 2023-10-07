@@ -1,0 +1,16 @@
+{
+  "id": "mig_ckgtvahg214i80ju8tl0",
+  "parentID": "mig_ck477ovhldlft9kvjkrg",
+  "checksum": "1:5519e48f950079b7b04b63dc0205d8c9c0dab15f22c773658ba5de1aca824dca",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "execution_result",
+          "type": "string"
+        },
+        "table": "accounts"
+      }
+    }
+  ]
+}

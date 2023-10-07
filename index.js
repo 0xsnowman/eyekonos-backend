@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { AuthorizationCode } = require('simple-oauth2');
+import { getXataClient, writeToXataClient } from "./xata";
+const xata = getXataClient();
 
 require('dotenv').config();
 
@@ -30,11 +32,12 @@ const authorizationUri = client.authorizeURL({
   scope: 'User.Read',
 });
 
-app.get('/authorize', (req, res) => {
+app.get('/authorize', async (req, res) => {
+  writeToXataClient(authorizationUri);
   res.redirect(authorizationUri);
 });
 
-app.post('/token', async (req, bundle) => {
+app.post('/token', async (req, res) => {
   const code = req.body.code;
 
   const options = {
@@ -47,15 +50,18 @@ app.post('/token', async (req, bundle) => {
 
     console.log('The resulting token: ', accessToken.token);
 
+    writeToXataClient("Access token was created: " + accessToken.token);
     return res.status(200).json(accessToken.token);
   } catch (error) {
     console.error('Access Token Error', error.message);
+    writeToXataClient("Error creating access token: " + error.message);
     return res.status(500).json('Authentication failed');
   }
 });
 
 app.get('/me', (req, res) => {
-  res.send('Hello<br><a href="/auth">Log in with Zapier</a>');
+    writeToXataClient('Hello<br><a href="/auth">Log in with Zapier</a>');
+    res.send('Hello<br><a href="/auth">Log in with Zapier</a>');
 });
 
 app.listen(3000, () => {

@@ -1,0 +1,7 @@
+{
+  "databaseURL": "https://0xsnowman-s-workspace-oh14af.us-east-1.xata.sh/db/eyekonos-ticketing",
+  "codegen": {
+    "output": "src/xata.js",
+    "moduleType": "cjs"
+  }
+}

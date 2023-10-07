@@ -1,0 +1,13 @@
+{
+  "id": "mig_ckgtvlpg214i80ju8tm0",
+  "parentID": "mig_ckgtvahg214i80ju8tl0",
+  "checksum": "1:bd2bd3f4d66aad071df77548c12e088312715f1c3d1ab9f99b679e8a7e04f5fc",
+  "operations": [
+    {
+      "renameTable": {
+        "newName": "execution_result",
+        "oldName": "accounts"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "mig_ck477ovhldlft9kvjkrg",
+  "checksum": "1:1a04efe05d611d54fc0915629f1fe89b0f35521fc6d6a8057b95c42e329e411e",
+  "operations": [
+    {
+      "addTable": {
+        "table": "accounts"
+      }
+    }
+  ]
+}
