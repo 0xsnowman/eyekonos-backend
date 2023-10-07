@@ -1,6 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const simpleOAuth = require('simple-oauth2');
+
+const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require('simple-oauth2');
 
 require('dotenv').config();
 
@@ -43,39 +46,36 @@ app.get('/authorize', (req, res) => {
 
 // OAuth2 Access Token getter
 app.post('/token', async (req, bundle) => {
-  const promise = req.request(`https://formstack.com/api/v2/oauth2/token`, {
-    method: 'POST',
-    body: {
-      code: bundle.inputData.code,
-      client_id: process.env.CLIENT_ID,
-      grant_type: 'authorization_code',
-      redirect_uri: bundle.inputData.redirect_uri,
-      code_verifier: bundle.inputData.code_verifier,
+  const config = {
+    client: {
+      id: process.env.CLIENT_ID,
+      secret: process.env.CLIENT_SECRET,
     },
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded'
+    auth: {
+      tokenHost: 'https://api.oauth.com',
     }
-  });
+  };
 
-  // Needs to return at minimum, `access_token`, and if your app also does refresh, then `refresh_token` too
-  return promise.then((response) => {
-    if (response.status !== 200) {
-      throw new Error('Unable to fetch access token: ' + response.content);
-    }
+  const client = new AuthorizationCode(config);
 
-    const result = JSON.parse(response.content);
-    return {
-      access_token: result.access_token,
-      // refresh_token: result.refresh_token
-    };
-  });
+  const tokenParams = {
+    code: bundle.inputData.code,
+    redirect_uri: bundle.inputData.redirect_uri,
+    scope: 'authorization_code',
+  };
+
+  const accessToken = await client.getToken(tokenParams);
+
+  return {
+    access_token: accessToken,
+  };
 });
 
 // Me : For test authentication credentials, ideally one needing no configuration such as Me
 app.get('/me', (req, bundle) => {
   const promise = req.request({
     method: 'GET',
-    url: `https://formstack.com/api/v2/folder.json`,
+    url: `https://api.oauth.com`,
   });
 
   // This method can return any truthy value to indicate the credentials are valid.
