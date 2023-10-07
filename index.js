@@ -33,12 +33,12 @@ app.get('/authorize', (req, res) => {
   const state = req.query.state;
   const redirectUri = req.query.redirect_uri;
   const responseType = req.query.response_type;
-  const code = req.query.code;
+  // const code = req.query.code;
 
   // Check with process.env.CLIENT_ID and process.env.CLIENT_SECRET
-  console.log(`Authorized successfully, payload: {${clientId}, ${state}, ${redirectUri}, ${responseType}, ${code}}`);
+  console.log(`Authorized successfully, payload: {${clientId}, ${state}, ${redirectUri}, ${responseType}}`);
 
-  const authorizeUrl = `${process.env.ZAPIER_REDIRECT_URI}?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&code=${code}`;
+  const authorizeUrl = `${process.env.ZAPIER_REDIRECT_URI}?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
 
   // Send an access token
   res.redirect(authorizeUrl);
