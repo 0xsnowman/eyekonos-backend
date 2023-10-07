@@ -28,17 +28,10 @@ app.post('/tickets', (req, res) => {
 });
 
 // OAuth2 authentication
-app.get('/authorize', (req, res) => {
-  const { client_id, redirect_uri, state } = req.query;
-
-  // Check if all required parameters are present
-  if (!client_id || !redirect_uri || !state) {
-    return res.status(400).json({ error: 'Missing required parameters' });
-  }
-
+app.get('/authorize', (req, bundle) => {
   // Redirect user to Zapier authorization page
-  const authorizationUrl = `https://zapier.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}`;
-  res.redirect(authorizationUrl);
+  const authorizationUrl = `https://zapier.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${bundle.inputData.redirect_uri}&state=${bundle.inputData.state}`;
+  bundle.redirect(authorizationUrl);
 });
 
 // OAuth2 Access Token getter
