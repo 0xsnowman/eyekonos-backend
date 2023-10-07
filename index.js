@@ -1,84 +1,63 @@
 const express = require('express');
-const axios = require('axios');
 const bodyParser = require('body-parser');
-const simpleOAuth = require('simple-oauth2');
-
-const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require('simple-oauth2');
+const { AuthorizationCode } = require('simple-oauth2');
 
 require('dotenv').config();
 
 const app = express();
 
-// Use the built-in middleware for parsing JSON and URL-encoded request bodies
 app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({ extended: true }))
-
-// Define a route for handling POST requests
 app.post('/tickets', (req, res) => {
-  // Extract the 'email' and 'ticket_id' parameters from the request body
-  console.log(req.body);
   const email = req.body.email;
   const ticket_id = req.body.ticket_id;
 
-  // Do something with the parameters (e.g. save to database, send email, etc.)
-  console.log(`Received ticket data: email=${email}, ticket_id=${ticket_id}`);
-
-  // Send a response to the client
   res.status(200).send(`Ticket data received. Payload: {${email}, ${ticket_id}}`);
 });
 
-// OAuth2 authentication
-app.get('/authorize', (req, bundle) => {
-  // Redirect user to Zapier authorization page
-  const authorizationUrl = `https://zapier.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${bundle.inputData.redirect_uri}&state=${bundle.inputData.state}`;
-  bundle.redirect(authorizationUrl);
+const client = new AuthorizationCode({
+  client: {
+    id: process.env.CLIENT_ID,
+    secret: process.env.CLIENT_SECRET,
+  },
+  auth: {
+    tokenHost: 'https://zapier.com',
+    tokenPath: 'oauth/authorize'
+  },
 });
 
-// OAuth2 Access Token getter
+const authorizationUri = client.authorizeURL({
+  redirect_uri: process.env.ZAPIER_REDIRECT_URI,
+  scope: 'User.Read',
+});
+
+app.get('/authorize', (req, res) => {
+  res.redirect(authorizationUri);
+});
+
 app.post('/token', async (req, bundle) => {
-  const config = {
-    client: {
-      id: process.env.CLIENT_ID,
-      secret: process.env.CLIENT_SECRET,
-    },
-    auth: {
-      tokenHost: 'https://api.oauth.com',
-    }
+  const code = req.body.code;
+
+  const options = {
+    code,
+    redirect_uri: process.env.ZAPIER_REDIRECT_URI,
   };
 
-  const client = new AuthorizationCode(config);
+  try {
+    const accessToken = await client.getToken(options);
 
-  const tokenParams = {
-    code: bundle.inputData.code,
-    redirect_uri: bundle.inputData.redirect_uri,
-    scope: 'authorization_code',
-  };
+    console.log('The resulting token: ', accessToken.token);
 
-  const accessToken = await client.getToken(tokenParams);
-
-  return {
-    access_token: accessToken,
-  };
+    return res.status(200).json(accessToken.token);
+  } catch (error) {
+    console.error('Access Token Error', error.message);
+    return res.status(500).json('Authentication failed');
+  }
 });
 
-// Me : For test authentication credentials, ideally one needing no configuration such as Me
-app.get('/me', (req, bundle) => {
-  const promise = req.request({
-    method: 'GET',
-    url: `https://api.oauth.com`,
-  });
-
-  // This method can return any truthy value to indicate the credentials are valid.
-  // Raise an error to show
-  return promise.then((response) => {
-    if (response.status === 401) {
-      throw new Error('The access token you supplied is not valid');
-    }
-    return req.JSON.parse(response.content);
-  });
+app.get('/me', (req, res) => {
+  res.send('Hello<br><a href="/auth">Log in with Zapier</a>');
 });
 
-// Start the server
 app.listen(3000, () => {
   console.log('Server started on port 3000', process.env.ZAPIER_REDIRECT_URI);
 });
