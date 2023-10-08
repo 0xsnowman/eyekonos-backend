@@ -69,7 +69,7 @@ app.post('/token', async (req, res) => {
 
 app.get('/me', async (req, res) => {
   await xata.db.execution_result.create({
-    execution_result: `Hello<br><a href="/auth">Log in with Zapier</a>}`,
+    execution_result: `Hello<br><a href="/auth">Log in with Zapier</a>`,
   });
   res.send('Hello<br><a href="/auth">Log in with Zapier</a>');
 });
