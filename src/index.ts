@@ -5,7 +5,7 @@ import { getXataClient } from "./xata";
 const xata = getXataClient();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT ?? 3000;
 
 const client = new AuthorizationCode({
   client: {
@@ -13,8 +13,7 @@ const client = new AuthorizationCode({
     secret: process.env.CLIENT_SECRET as string,
   },
   auth: {
-    tokenHost: 'https://zapier.com',
-    tokenPath: 'oauth/authorize'
+    tokenHost: 'https://api.oauth.com',
   },
 });
 
