@@ -1,28 +1,11 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import { AuthorizationCode, AuthorizationTokenConfig } from 'simple-oauth2';
-import { getXataClient } from "./xata";
-import { Request } from 'express-serve-static-core';
+const express = require('express');
+const bodyParser = require('body-parser');
+const { getXataClient } = require("./xata");
 
 const xata = getXataClient();
 
 const app = express();
 const port = process.env.PORT ?? 3000;
-
-const client = new AuthorizationCode({
-  client: {
-    id: process.env.CLIENT_ID,
-    secret: process.env.CLIENT_SECRET,
-  },
-  auth: {
-    tokenHost: 'https://api.oauth.com',
-  },
-});
-
-const authorizationUri = client.authorizeURL({
-  redirect_uri: process.env.ZAPIER_REDIRECT_URI,
-  scope: 'User.Read',
-});
 
 app.use(bodyParser.json());
 
