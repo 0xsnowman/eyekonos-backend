@@ -21,9 +21,9 @@ app.post('/tickets', async (req, res) => {
 
 app.get('/authorize', async (req, res) => {
   await xata.db.execution_result.create({
-    execution_result: `authorized url: https://auth-json-server.zapier-staging.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&state=${res.inputData.state}&redirect_uri=${process.env.ZAPIER_REDIRECT_URI}&response_type=code`,
+    execution_result: `authorized url: https://auth-json-server.zapier-staging.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.ZAPIER_REDIRECT_URI}&response_type=code`,
   });
-  res.redirect(`https://auth-json-server.zapier-staging.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&state=${res.inputData.state}&redirect_uri=${process.env.ZAPIER_REDIRECT_URI}&response_type=code`)
+  res.redirect(`https://auth-json-server.zapier-staging.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.ZAPIER_REDIRECT_URI}&response_type=code`)
 });
 
 app.post('/token', async (req, res) => {
