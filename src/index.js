@@ -34,7 +34,7 @@ app.post('/token', async (req, res) => {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       grant_type: 'authorization_code',
-      code: res.inputData.code,
+      code: 4444,
     },
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
   });
