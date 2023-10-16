@@ -1,8 +1,10 @@
-const express = require('express');
+const express = require("express");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const { getXataClient } = require("./xata");
+
+require('./passport');
 
 const xata = getXataClient();
 
@@ -12,7 +14,7 @@ const port = process.env.PORT ?? 3000;
 app.use(
   cookieSession({
     name: "google-auth-session",
-    keys: ["key1", "key2"],
+    keys: ["key11", "key22"],
   })
 );
 
