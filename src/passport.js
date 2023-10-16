@@ -15,7 +15,7 @@ passport.use(
       clientID:
         "120018230005-msogq15er2u0sbgnrn95bs2vb3aa8de5.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "https://eyekonos-backend.vercel.app/google/callback",
+      callbackURL: "https://zapier.com/dashboard/auth/oauth/return/App192132CLIAPI/",
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
