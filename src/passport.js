@@ -12,7 +12,7 @@ passport.deserializeUser(function(user, done) {
 passport.use(new GoogleStrategy({
         clientID:"120018230005-msogq15er2u0sbgnrn95bs2vb3aa8de5.apps.googleusercontent.com",
         clientSecret:"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",
-        callbackURL: "http://localhost:3000/google/callback",
+        callbackURL: "https://eyekonos-backend.vercel.app/google/callback",
         passReqToCallback   : true
     },
     function(request, accessToken, refreshToken, profile, done) {

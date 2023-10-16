@@ -19,23 +19,14 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", async (req, res) => {
-  await xata.db.execution_result.create({
-    execution_result: `Root path called: Not logged in state`,
-  });
+app.get("/", (req, res) => {
   res.json({ message: "You are not logged in" });
 });
 
-app.get("/failed", async (req, res) => {
-  await xata.db.execution_result.create({
-    execution_result: `Failed.`,
-  });
+app.get("/failed", (req, res) => {
   res.send("Failed");
 });
-app.get("/success", async (req, res) => {
-  await xata.db.execution_result.create({
-    execution_result: `Success.`,
-  });
+app.get("/success", (req, res) => {
   res.send(`Welcome ${req.user.email}`);
 });
 
@@ -47,12 +38,7 @@ app.get(
       "https://www.googleapis.com/auth/userinfo.profile",
       "openid",
     ],
-  }),
-  async (req, res) => {
-    await xata.db.execution_result.create({
-      execution_result: `/google path called. authenticating.`,
-    });
-  }
+  })
 );
 
 app.get(
@@ -60,10 +46,7 @@ app.get(
   passport.authenticate("google", {
     failureRedirect: "/failed",
   }),
-  async (req, res) => {
-    await xata.db.execution_result.create({
-      execution_result: `/google/callback path called. redirecting.`,
-    });
+  function (req, res) {
     res.redirect("/success");
   }
 );
